@@ -2,6 +2,7 @@
 import pandas as pd
 import numpy as np
 from operator import mul
+from xlwt import Workbook
 import operator
 
 def mult(liste):
@@ -38,5 +39,40 @@ def rentabilite_portefeuille(portefeuille):
 		renta += portefeuille[k][1]
 	return renta / n
 
-P8 = composition_portefeuille(1995, 6)[7]
-print(rentabilite_portefeuille(P8))
+def dico_pf(annee_periode, duree_prec):
+    actifs_pf = {}
+    for index, pf in enumerate(composition_portefeuille(annee_periode, duree_prec)):
+        for actif in pf:
+            actifs_pf[str(actif[0])] = "P" + str(index+1) 
+    return  actifs_pf
+
+
+# Creation du fichier associant chaque actif a un portefeuille en tout temps
+# duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
+# duree_prec est le nombre de mois precedents a prendre en compte pour constituer le pf
+def fichier_compo(duree_etude, duree_prec) :
+    # création du fichier de composition de pf
+    fich = Workbook()
+    # création de la feuille 1
+    feuil1 = fich.add_sheet('feuille 1')
+    # ajout des en-têtes
+    feuil1.write(0,0,'Year')
+    feuil1.write(0,1,'Month')
+    for k in range(2, len(stock_numbers)+2):
+        feuil1.write(0,k,str(stock_numbers[k-2]))
+    for i, annee in enumerate(df.year.unique()[0:duree_etude]):
+        for mois in df.month.unique()[0:12]:
+            #colonne 1 : annee
+            feuil1.write(int(12*i+mois),0,annee)
+            #colonne 2 : mois
+            feuil1.write(int(12*i+mois),1,mois)
+            if mois == 1 :
+                data = dico_pf(annee, duree_prec)
+            for k in range(2,len(stock_numbers)+2):
+                feuil1.write(int(12*i+mois),k, data.get(str(stock_numbers[k-2])))
+    # création matérielle du fichier résultant
+    fich.save('../../Excel/composition.xls')
+
+fichier_compo(20,6)
+
+
