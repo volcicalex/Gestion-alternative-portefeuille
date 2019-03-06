@@ -1,9 +1,9 @@
 # On recupere les donnees
 library(readxl)
-actifs <- data.frame(read_excel("3A/Gestion Alternative/Gestion-alternative-portefeuille/Excel/Selected_Actif_85-05.xlsx"))
+actifs <- data.frame(read_excel("Selected_Actif_85-05.xlsx"))
 stock_numbers <- unique(actifs$stock_number)
 
-#Rentabilité sur la période en fonction des rentabilités mensuelles
+#Rentabilit? sur la p?riode en fonction des rentabilit?s mensuelles
 calcul_rentab <- function(liste){
   r = 1
   l = length(liste)
@@ -14,7 +14,7 @@ calcul_rentab <- function(liste){
 }
 
 
-#On calcule la rentabilité de chaque actif sur une année donnée pendant une période
+#On calcule la rentabilit? de chaque actif sur une ann?e donn?e pendant une p?riode
 rentab <- function(annee_periode, mois_periode, taille_periode){
   dico_rentab=data.frame(actif=stock_numbers, rentab = rep(0,100))
   for (i in c(1:100)){
@@ -27,9 +27,9 @@ rentab <- function(annee_periode, mois_periode, taille_periode){
   return(dico_rentab)
 }
 
-#Cette fonction permet de calculer la composition des portefeuilles P1 à P10 
-#On lui donne en entrée la date de composition de notre portefeuille
-#Et la période de prévision pour le portefeuille
+#Cette fonction permet de calculer la composition des portefeuilles P1 ? P10 
+#On lui donne en entr?e la date de composition de notre portefeuille
+#Et la p?riode de pr?vision pour le portefeuille
 
 composition_portefeuille <- function(annee_periode, debut_periode, taille_periode){
   rentabilites = rentab(annee_periode - 1, debut_periode - taille_periode , taille_periode)
