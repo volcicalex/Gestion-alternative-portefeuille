@@ -83,24 +83,28 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   rentab_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                             P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
                             P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), marche=rep(0, nb_lignes), rf=rep(0, nb_lignes))
+  rentaTransac_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+                             P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
+                             P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), marche=rep(0, nb_lignes), rf=rep(0, nb_lignes))
   beta_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                            P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
                            P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
   betaSMB_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                            P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
-                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), SMB=rep(0, nb_lignes))
   betaHML_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                            P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
-                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), HML=rep(0, nb_lignes))
   betaMOM_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                            P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
-                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), MOM=rep(0, nb_lignes))
   for (annee in c(1986: 2004)){
     compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     for (indice_P in seq(1:10)){
       P <- as.integer(unlist(strsplit(portefeuilles[indice_P,2], split=", ")))
       for (mois in seq(1:12)){
         renta_k <- 0
+        rentaTransac_k <- 0
         beta_k <- 0
         betaSMB_k <- 0
         betaHML_k <- 0
@@ -117,10 +121,20 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
         rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,14]<-sum(tab_k["Marketretrun"])
         rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,15]<-sum(tab_k["RiskFreeReturn"])
         
+        rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]<-renta_k/10
+        rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,14]<-sum(tab_k["Marketretrun"])
+        rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,15]<-sum(tab_k["RiskFreeReturn"])
+        
         beta_frame[beta_frame$annee==annee & beta_frame$mois==mois,indice_P + 2]<-beta_k/10
+        
         betaSMB_frame[betaSMB_frame$annee==annee & betaSMB_frame$mois==mois,indice_P + 2]<-betaSMB_k/10
+        betaSMB_frame[betaSMB_frame$annee==annee & betaSMB_frame$mois==mois,14]<-sum(tab_k["SmallMinusBig"])
+        
         betaHML_frame[betaHML_frame$annee==annee & betaHML_frame$mois==mois,indice_P + 2]<-betaHML_k/10
+        betaHML_frame[betaHML_frame$annee==annee & betaHML_frame$mois==mois,14]<-sum(tab_k["HighMinusLow"])
+        
         betaMOM_frame[betaMOM_frame$annee==annee & betaMOM_frame$mois==mois,indice_P + 2]<-betaMOM_k/10
+        betaMOM_frame[betaMOM_frame$annee==annee & betaMOM_frame$mois==mois,14]<-sum(tab_k["MomentumFactor"])
       }
     }
   }
@@ -146,7 +160,7 @@ portefeuille_annuel <- function(duree_etude, duree_prec){
   rownames(constitution_annuelle) <- c(1985:2004)
   colnames(constitution_annuelle) <-  c("Mois", stock_numbers)
   constitution_annuelle$Mois <- rep(" Juillet - Juin ", 20)
-  constitution_annuelle$Mois[20] <- " Juillet - Décembre "
+  constitution_annuelle$Mois[20] <- " Juillet - D?cembre "
   for (annee in c(1985:2004)) {
     print(annee)
     actif_portfeuille = association_actif_pf(annee, 7, duree_prec)
