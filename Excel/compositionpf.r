@@ -1,5 +1,6 @@
 # On recupere les donnees
 library(readxl)
+library(stringr)
 actifs <- data.frame(read_excel("3A/Gestion Alternative/Gestion-alternative-portefeuille/Excel/Selected_Actif_85-05.xlsx"))
 stock_numbers <- unique(actifs$stock_number)
 
@@ -31,8 +32,26 @@ rentab <- function(annee_periode, mois_periode, taille_periode){
 #On lui donne en entrée la date de composition de notre portefeuille
 #Et la période de prévision pour le portefeuille
 
+association_actif_pf <- function(annee_periode, debut_periode, taille_periode){
+  rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
+  sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
+  portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
+  actif_portfeuille = data.frame(portefeuille = rep(0,100))
+  rownames(actif_portfeuille) = stock_numbers
+  for (num_pf in seq(1:10)) {
+    actif_pf = rep(0, 10)
+    for (k in seq(1:10)) {
+      actif_pf[k] = sorted_rentabilites$actif[k + 10*(num_pf-1)]
+      numero_actif = toString(actif_pf[k])
+      actif_portfeuille[numero_actif, "portefeuille"] = num_pf
+    }
+    portefeuille$actifs[num_pf] = toString(actif_pf)
+  }
+  return(actif_portfeuille)
+}
+
 composition_portefeuille <- function(annee_periode, debut_periode, taille_periode){
-  rentabilites = rentab(annee_periode - 1, debut_periode - taille_periode , taille_periode)
+  rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   for (num_pf in seq(1:10)) {
@@ -52,18 +71,20 @@ porteuille_annuel <- function(duree_etude, duree_prec){
   constitution_annuelle <- data.frame(matrix(NA,ncol=100,nrow=20))
   rownames(constitution_annuelle) <- c(1985:2004)
   colnames(constitution_annuelle) <-  stock_numbers
-  for (annee in seq(1985:2004)) {
-    portefeuille = composition_portefeuille(annee, 7, 6)
-    constitution_annuelle[, annee - 1984] = rentabilites$rentab
+  for (annee in c(1985:2004)) {
+    print(annee)
+    actif_portfeuille = association_actif_pf(annee, 7, duree_prec)
+    constitution_annuelle[toString(annee), ] = actif_portfeuille$portefeuille
   }
   return(constitution_annuelle)
 }
 
 rentab_actif <- rentab(1985, 1, 6)
 print(rentab_actif)
-portefeuilles <- composition_portefeuille(1986, 7, 6)
+portefeuilles <- association_actif_pf(1985, 7, 6)
 print(portefeuilles)
 
-
+annuel <- porteuille_annuel(20, 6)
+print(annuel)
   
  
