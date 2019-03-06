@@ -101,7 +101,7 @@ rentab_portefeuille(7,6)
 # Creation du fichier associant chaque actif a un portefeuille en tout temps
 # duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
 # duree_prec est le nombre de mois precedents a prendre en compte pour constituer le pf
-porteuille_annuel <- function(duree_etude, duree_prec){
+portefeuille_annuel <- function(duree_etude, duree_prec){
   constitution_annuelle <- data.frame(matrix(NA,ncol=100,nrow=20))
   rownames(constitution_annuelle) <- c(1985:2004)
   colnames(constitution_annuelle) <-  stock_numbers
