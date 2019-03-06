@@ -15,9 +15,9 @@ ratioSharpe <- function(vect_return, vect_risk_free_return){
   return((mean(vect_return)-mean(vect_risk_free_return))/sd(vect_return))
 }
 
-ratioSharpe(data_renta$P1, data_renta$Rf)
-ratioSharpe(data_renta$P10, data_renta$Rf)
-#ratioSharpe(data_renta$P10-P1, data_renta$Rf)
+ratioSharpe(data_renta$P1, data_renta$rf)
+ratioSharpe(data_renta$P10, data_renta$rf)
+ratioSharpe(data_renta$P10P1, data_renta$rf)
 
 ratioTreynor <- function(vect_return, vect_risk_free_return, vect_beta){
   return((mean(vect_return)-mean(vect_risk_free_return))/mean(vect_beta))
