@@ -19,9 +19,21 @@ ratioSharpe(data_renta$P1, data_renta$rf)
 ratioSharpe(data_renta$P10, data_renta$rf)
 ratioSharpe(data_renta$P10P1, data_renta$rf)
 
+t.test((data_renta$P1-data_renta$rf)/sd(data_renta$P1), mu=0)
+t.test((data_renta$P10-data_renta$rf)/sd(data_renta$P1), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)/sd(data_renta$P1), mu=0)
+
 ratioTreynor <- function(vect_return, vect_risk_free_return, vect_beta){
   return((mean(vect_return)-mean(vect_risk_free_return))/mean(vect_beta))
 }
+
+ratioTreynor(data_renta$P1, data_renta$rf, data_beta$P1)
+ratioTreynor(data_renta$P10, data_renta$rf, data_beta$P10)
+ratioTreynor(data_renta$P10P1, data_renta$rf, data_beta$P10P1)
+
+t.test((data_renta$P1-data_renta$rf)/mean(data_beta$P1), mu=0)
+t.test((data_renta$P10-data_renta$rf)/mean(data_beta$P10), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)/mean(data_beta$P10P1), mu=0)
 
 alphaJensen <- function(vect_return, vect_risk_free_return, vect_beta, vect_market){
   rp <- mean(vect_return)
