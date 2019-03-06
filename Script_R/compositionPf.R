@@ -101,7 +101,7 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   for (annee in c(1986: 2004)){
     compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     for (indice_P in seq(1:10)){
-      P <- as.integer(unlist(strsplit(portefeuilles[indice_P,2], split=", ")))
+      P <- as.integer(unlist(strsplit(compo[indice_P,2], split=", ")))
       for (mois in seq(1:12)){
         renta_k <- 0
         rentaTransac_k <- 0
@@ -121,7 +121,7 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
         rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,14]<-sum(tab_k["Marketretrun"])
         rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,15]<-sum(tab_k["RiskFreeReturn"])
         
-        rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]<-renta_k/10
+        rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]<-renta_k/10 - 0.001*abs(renta_k/10)
         rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,14]<-sum(tab_k["Marketretrun"])
         rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,15]<-sum(tab_k["RiskFreeReturn"])
         
@@ -143,7 +143,9 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   betaSMB_frame$P10P1 <- betaSMB_frame$P10 - betaSMB_frame$P1
   betaHML_frame$P10P1 <- betaHML_frame$P10 - betaHML_frame$P1
   betaMOM_frame$P10P1 <- betaMOM_frame$P10 - betaMOM_frame$P1
+  rentaTransac_frame$P10P1 <- rentaTransac_frame$P10 - rentaTransac_frame$P1
   
+  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
   write.csv2(rentab_frame, "../Excel/renta85-05.csv")
   write.csv2(beta_frame, "../Excel/beta85-05.csv")
   write.csv2(betaSMB_frame, "../Excel/betaSMB85-05.csv")
@@ -168,6 +170,14 @@ portefeuille_annuel <- function(duree_etude, duree_prec){
   }
   return(constitution_annuelle)
 }
+
+
+
+
+
+
+
+
 
 rentab_actif <- rentab(1985, 1, 6)
 print(rentab_actif)
