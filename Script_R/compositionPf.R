@@ -47,10 +47,12 @@ composition_portefeuille <- function(annee_periode, debut_periode, taille_period
 
 annees <- c()
 moiss <- c()
-for (annee in c(1985:2004)){
+rows <- c()
+for (annee in c(1986:2004)){
   for (mois in c(1:12)){
     annees <- rbind(annees, annee)
     moiss <- rbind(moiss, mois)
+    rows <- rbind(rows, paste(as.character(mois), "/", as.character(annee), sep = ""))
   }
 }
 
@@ -58,25 +60,63 @@ for (annee in c(1985:2004)){
 #On prend en entrée la durée de la periode
 rentab_portefeuille <- function(debut_periode, taille_periode){
   nb_lignes <- length(annees)
-  rentab_frame = data.frame(annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+  rentab_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
                             P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
                             P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes), marche=rep(0, nb_lignes), rf=rep(0, nb_lignes))
+  beta_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+                           P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+  betaSMB_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+                           P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+  betaHML_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+                           P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
+  betaMOM_frame <- data.frame(row.names = rows, annee=annees, mois=moiss, P1=rep(0, nb_lignes), P2=rep(0, nb_lignes), P3=rep(0, nb_lignes), 
+                           P4=rep(0, nb_lignes), P5=rep(0, nb_lignes), P6=rep(0, nb_lignes), P7=rep(0, nb_lignes), P8=rep(0, nb_lignes), 
+                           P9=rep(0, nb_lignes), P10=rep(0, nb_lignes), P10P1=rep(0, nb_lignes))
   for (annee in c(1986: 2004)){
     compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     for (indice_P in seq(1:10)){
       P <- as.integer(unlist(strsplit(portefeuilles[indice_P,2], split=", ")))
       for (mois in seq(1:12)){
         renta_k <- 0
+        beta_k <- 0
+        betaSMB_k <- 0
+        betaHML_k <- 0
+        betaMOM_k <- 0
         for (action in P){
           tab_k <- actifs[actifs$stock_number==action & actifs$year==annee & actifs$month==mois,]
           renta_k <- renta_k + sum(tab_k["return_rf"] + tab_k["RiskFreeReturn"])
+          beta_k <- beta_k + sum(tab_k["beta"])
+          betaSMB_k <- betaSMB_k + sum(tab_k["betaSMB"])
+          betaHML_k <- betaHML_k + sum(tab_k["betaHML"])
+          betaMOM_k <- betaMOM_k + sum(tab_k["betaMOM"])
         }
+        rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,indice_P + 2]<-renta_k/10
+        rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,14]<-sum(tab_k["Marketretrun"])
+        rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,15]<-sum(tab_k["RiskFreeReturn"])
+        
+        beta_frame[beta_frame$annee==annee & beta_frame$mois==mois,indice_P + 2]<-beta_k/10
+        betaSMB_frame[betaSMB_frame$annee==annee & betaSMB_frame$mois==mois,indice_P + 2]<-betaSMB_k/10
+        betaHML_frame[betaHML_frame$annee==annee & betaHML_frame$mois==mois,indice_P + 2]<-betaHML_k/10
+        betaMOM_frame[betaMOM_frame$annee==annee & betaMOM_frame$mois==mois,indice_P + 2]<-betaMOM_k/10
       }
     }
   }
+  rentab_frame$P10P1 <- rentab_frame$P10 - rentab_frame$P1
+  beta_frame$P10P1 <- beta_frame$P10 - beta_frame$P1
+  betaSMB_frame$P10P1 <- betaSMB_frame$P10 - betaSMB_frame$P1
+  betaHML_frame$P10P1 <- betaHML_frame$P10 - betaHML_frame$P1
+  betaMOM_frame$P10P1 <- betaMOM_frame$P10 - betaMOM_frame$P1
+  
+  write.csv2(rentab_frame, "../Excel/renta85-05.csv")
+  write.csv2(beta_frame, "../Excel/beta85-05.csv")
+  write.csv2(betaSMB_frame, "../Excel/betaSMB85-05.csv")
+  write.csv2(betaHML_frame, "../Excel/betaHML85-05.csv")
+  write.csv2(betaMOM_frame, "../Excel/betaMOM85-05.csv")
 }
-rentab_portefeuille(7,6)
-
+rentab_frame <- rentab_portefeuille(7,6)
 
 # Creation du fichier associant chaque actif a un portefeuille en tout temps
 # duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
