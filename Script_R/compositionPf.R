@@ -101,7 +101,7 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   for (annee in c(1986: 2004)){
     compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     for (indice_P in seq(1:10)){
-      P <- as.integer(unlist(strsplit(portefeuilles[indice_P,2], split=", ")))
+      P <- as.integer(unlist(strsplit(compo[indice_P,2], split=", ")))
       for (mois in seq(1:12)){
         renta_k <- 0
         rentaTransac_k <- 0
