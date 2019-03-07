@@ -153,7 +153,9 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   betaSMB_frame$P10P1 <- betaSMB_frame$P10 - betaSMB_frame$P1
   betaHML_frame$P10P1 <- betaHML_frame$P10 - betaHML_frame$P1
   betaMOM_frame$P10P1 <- betaMOM_frame$P10 - betaMOM_frame$P1
+  rentaTransac_frame$P10P1 <- rentaTransac_frame$P10 - rentaTransac_frame$P1
   
+  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
   write.csv2(rentab_frame, "../Excel/renta85-05.csv")
   write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
   write.csv2(beta_frame, "../Excel/beta85-05.csv")
@@ -166,12 +168,13 @@ rentab_frame <- rentab_portefeuille(7,6)
 # Creation du fichier associant chaque actif a un portefeuille en tout temps
 # duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
 # duree_prec est le nombre de mois precedents a prendre en compte pour constituer le pf
+
 portefeuille_annuel <- function(duree_etude, duree_prec){
   constitution_annuelle <- data.frame(matrix(NA,ncol=101,nrow=20))
   rownames(constitution_annuelle) <- c(1985:2004)
   colnames(constitution_annuelle) <-  c("Mois", stock_numbers)
   constitution_annuelle$Mois <- rep(" Juillet - Juin ", 20)
-  constitution_annuelle$Mois[20] <- " Juillet - D?cembre "
+  constitution_annuelle$Mois[20] <- " Juillet - Decembre "
   for (annee in c(1985:2004)) {
     print(annee)
     actif_portfeuille = association_actif_pf(annee, 7, duree_prec)
@@ -179,6 +182,14 @@ portefeuille_annuel <- function(duree_etude, duree_prec){
   }
   return(constitution_annuelle)
 }
+
+
+
+
+
+
+
+
 
 rentab_actif <- rentab(1985, 1, 6)
 print(rentab_actif)
