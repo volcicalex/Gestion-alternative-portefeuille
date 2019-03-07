@@ -35,8 +35,6 @@ rentab <- function(annee_periode, mois_periode, taille_periode){
 association_actif_pf <- function(annee_periode, debut_periode, taille_periode){
   rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
-  print("rentabilities")
-  print(sorted_rentabilites)
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   actif_portfeuille = data.frame(portefeuille = rep(0,100))
   rownames(actif_portfeuille) = stock_numbers
@@ -54,10 +52,11 @@ association_actif_pf <- function(annee_periode, debut_periode, taille_periode){
 
 
 composition_portefeuille <- function(annee_periode, debut_periode, taille_periode){
+  if (debut_periode == 1) {
+    rentabilites = rentab(annee_periode - 1, 10, taille_periode)
+  }
   rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
-  print("rentabilities")
-  print(sorted_rentabilites)
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   for (num_pf in seq(1:10)) {
     actif_pf = rep(0, 10)
@@ -110,7 +109,7 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
     annee = as.integer(strsplit(date, "/")[[1]][2])
     mois = as.integer(strsplit(date, "/")[[1]][1])
     
-    if (mois == debut_periode) compo <- composition_portefeuille(annee, debut_periode, taille_periode)
+    if (mois%%taille_periode == 1) compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     
     for (indice_P in seq(1:10)){
       
@@ -133,7 +132,7 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
       }
       
       rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,indice_P + 2]<-renta_k/10
-      if (mois == 6) {
+      if (mois%%taille_periode == 1) {
         renta_k <- renta_k - 0.001 * abs(renta_k)
       }
       rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2] <- renta_k/10
@@ -162,15 +161,14 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   betaMOM_frame$P10P1 <- betaMOM_frame$P10 - betaMOM_frame$P1
   rentaTransac_frame$P10P1 <- rentaTransac_frame$P10 - rentaTransac_frame$P1
   
-  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
-  write.csv2(rentab_frame, "../Excel/renta85-05.csv")
-  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
+  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05-33.csv")
+  write.csv2(rentab_frame, "../Excel/renta85-05-33.csv")
   write.csv2(beta_frame, "../Excel/beta85-05.csv")
   write.csv2(betaSMB_frame, "../Excel/betaSMB85-05.csv")
   write.csv2(betaHML_frame, "../Excel/betaHML85-05.csv")
   write.csv2(betaMOM_frame, "../Excel/betaMOM85-05.csv")
 }
-rentab_frame <- rentab_portefeuille(7,6)
+rentab_frame <- rentab_portefeuille(4,3)
 
 # Creation du fichier associant chaque actif a un portefeuille en tout temps
 # duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
