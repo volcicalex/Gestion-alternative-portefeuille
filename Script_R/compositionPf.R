@@ -129,7 +129,8 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
       }
       
       rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,indice_P + 2]<-renta_k/10
-      rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]<-renta_k/10
+      rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]
+        <-renta_k/10 - (mois == 6) ? abs(renta_k/10) * 0.001 : 0
       beta_frame[beta_frame$annee==annee & beta_frame$mois==mois,indice_P + 2]<-beta_k/10
       betaSMB_frame[betaSMB_frame$annee==annee & betaSMB_frame$mois==mois,indice_P + 2]<-betaSMB_k/10
       betaHML_frame[betaHML_frame$annee==annee & betaHML_frame$mois==mois,indice_P + 2]<-betaHML_k/10
