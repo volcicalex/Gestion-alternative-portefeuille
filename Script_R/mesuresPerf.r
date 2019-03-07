@@ -51,6 +51,14 @@ t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)
 t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf)), mu=0)
 t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf)), mu=0)
 
+alphaJensenNormalise <- function(vect_return, vect_risk_free_return, vect_beta, vect_market){
+  return(alphaJensen(vect_return, vect_risk_free_return, vect_beta, vect_market)/mean(vect_beta))
+}
+
+alphaJensenNormalise(data_renta$P1, data_renta$rf, data_beta$P1, data_renta$marche)
+alphaJensenNormalise(data_renta$P10, data_renta$rf, data_beta$P10, data_renta$marche)
+alphaJensenNormalise(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche)
+
 alphaFF <- function(vect_return, vect_risk_free_return, vect_beta, vect_market, vect_beta_smb, vect_smb, vect_beta_hml, vect_hml){
   beta_smb <- mean(vect_beta_smb)
   smb <- mean(vect_smb)
@@ -80,4 +88,4 @@ alphaCahart(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche,
 t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P1)*mean(data_betaMOM$MOM), mu=0)
 t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10)*mean(data_betaHML$HML)-mean(data_betaMOM$P10)*mean(data_betaMOM$MOM), mu=0)
 t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P10P1)*mean(data_betaMOM$MOM), mu=0)
-              
+       
