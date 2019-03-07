@@ -20,8 +20,8 @@ ratioSharpe(data_renta$P10, data_renta$rf)
 ratioSharpe(data_renta$P10P1, data_renta$rf)
 
 t.test((data_renta$P1-data_renta$rf)/sd(data_renta$P1), mu=0)
-t.test((data_renta$P10-data_renta$rf)/sd(data_renta$P1), mu=0)
-t.test((data_renta$P10P1-data_renta$rf)/sd(data_renta$P1), mu=0)
+t.test((data_renta$P10-data_renta$rf)/sd(data_renta$P10), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)/sd(data_renta$P10P1), mu=0)
 
 ratioTreynor <- function(vect_return, vect_risk_free_return, vect_beta){
   return((mean(vect_return)-mean(vect_risk_free_return))/mean(vect_beta))
@@ -43,6 +43,14 @@ alphaJensen <- function(vect_return, vect_risk_free_return, vect_beta, vect_mark
   return((rp-rf)-beta*(rm-rf))
 }
 
+alphaJensen(data_renta$P1, data_renta$rf, data_beta$P1, data_renta$marche)
+alphaJensen(data_renta$P10, data_renta$rf, data_beta$P10, data_renta$marche)
+alphaJensen(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche)
+
+t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)-mean(data_renta$rf)), mu=0)
+t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf)), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf)), mu=0)
+
 alphaFF <- function(vect_return, vect_risk_free_return, vect_beta, vect_market, vect_beta_smb, vect_smb, vect_beta_hml, vect_hml){
   beta_smb <- mean(vect_beta_smb)
   smb <- mean(vect_smb)
@@ -55,10 +63,9 @@ alphaFF(data_renta$P1, data_renta$rf, data_beta$P1, data_renta$marche, data_beta
 alphaFF(data_renta$P10, data_renta$rf, data_beta$P10, data_renta$marche, data_betaSMB$P10, data_betaSMB$SMB, data_betaHML$P10, data_betaHML$HML)
 alphaFF(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche, data_betaSMB$P10P1, data_betaSMB$SMB, data_betaHML$P10P1, data_betaHML$HML)
 
-t.test((data_renta$P1-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P1*data_betaSMB$SMB-data_betaHML$P1*data_betaHML$HML, mu=0)
-t.test((data_renta$P10-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P10*data_betaSMB$SMB-data_betaHML$P10*data_betaHML$HML, mu=0)
-t.test((data_renta$P10P1-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P10P1*data_betaSMB$SMB-data_betaHML$P10P1*data_betaHML$HML, mu=0)
-
+t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P1)*mean(data_betaHML$HML), mu=0)
+t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10)*mean(data_betaHML$HML), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10P1)*mean(data_betaHML$HML), mu=0)
 
 alphaCahart <- function(vect_return, vect_risk_free_return, vect_beta, vect_market, vect_beta_smb, vect_smb, vect_beta_hml, vect_hml, vect_beta_umd, vect_umd){
   beta_umd <- mean(vect_beta_umd)
@@ -67,10 +74,10 @@ alphaCahart <- function(vect_return, vect_risk_free_return, vect_beta, vect_mark
 }
 
 alphaCahart(data_renta$P1, data_renta$rf, data_beta$P1, data_renta$marche, data_betaSMB$P1, data_betaSMB$SMB, data_betaHML$P1, data_betaHML$HML, data_betaMOM$P1, data_betaMOM$MOM)
-alphaCahart(data_renta$P10, data_renta$rf, data_beta$P10, data_renta$marche, data_betaSMB$P10, data_betaSMB$SMB, data_betaHML$P10, data_betaHML$HML, data_betaMOM$P1, data_betaMOM$MOM)
-alphaCahart(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche, data_betaSMB$P10P1, data_betaSMB$SMB, data_betaHML$P10P1, data_betaHML$HML, data_betaMOM$P1, data_betaMOM$MOM)
+alphaCahart(data_renta$P10, data_renta$rf, data_beta$P10, data_renta$marche, data_betaSMB$P10, data_betaSMB$SMB, data_betaHML$P10, data_betaHML$HML, data_betaMOM$P10, data_betaMOM$MOM)
+alphaCahart(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche, data_betaSMB$P10P1, data_betaSMB$SMB, data_betaHML$P10P1, data_betaHML$HML, data_betaMOM$P10P1, data_betaMOM$MOM)
 
-t.test((data_renta$P1-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P1*data_betaSMB$SMB-data_betaHML$P1*data_betaHML$HML-data_betaMOM$P1*data_betaMOM$MOM, mu=0)
-t.test((data_renta$P10-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P10*data_betaSMB$SMB-data_betaHML$P10*data_betaHML$HML-data_betaMOM$P1*data_betaMOM$MOM, mu=0)
-t.test((data_renta$P10P1-data_renta$rf)-data_beta$P1*(data_renta$marche-data_renta$rf)-data_betaSMB$P10P1*data_betaSMB$SMB-data_betaHML$P10P1*data_betaHML$HML-data_betaMOM$P1*data_betaMOM$MOM, mu=0)
-
+t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P1)*mean(data_betaMOM$MOM), mu=0)
+t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10)*mean(data_betaHML$HML)-mean(data_betaMOM$P10)*mean(data_betaMOM$MOM), mu=0)
+t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P10P1)*mean(data_betaMOM$MOM), mu=0)
+              
