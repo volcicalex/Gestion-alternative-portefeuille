@@ -55,7 +55,9 @@ composition_portefeuille <- function(annee_periode, debut_periode, taille_period
   if (debut_periode == 1) {
     rentabilites = rentab(annee_periode - 1, 10, taille_periode)
   }
-  rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
+  else{
+    rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
+  }
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   for (num_pf in seq(1:10)) {
@@ -187,13 +189,6 @@ portefeuille_annuel <- function(duree_etude, duree_prec){
   }
   return(constitution_annuelle)
 }
-
-
-
-
-
-
-
 
 
 rentab_actif <- rentab(1985, 1, 6)
