@@ -1,16 +1,14 @@
 library(readxl)
-csv1 <- read.csv2(file = "../Excel/renta85-05.csv", header = TRUE)
-data_renta <- as.data.frame(csv1)
-csv2 <- read.csv2(file = "../Excel/beta85-05.csv", header = TRUE)
-data_beta <- as.data.frame(csv2)
-csv3 <- read.csv2(file = "../Excel/betaSMB85-05.csv", header = TRUE)
-data_betaSMB <- as.data.frame(csv3)
-csv4 <- read.csv2(file = "../Excel/betaHML85-05.csv", header = TRUE)
-data_betaHML <- as.data.frame(csv4)
-csv5 <- read.csv2(file = "../Excel/betaMOM85-05.csv", header = TRUE)
-data_betaMOM <- as.data.frame(csv5)
-csv6 <- read.csv2(file = "../Excel/rentaTransac85-05.csv", header = TRUE)
-data_rentaTransac <- as.data.frame(csv6)
+csv1 <- read.csv2(file = "../Excel/beta85-05.csv", header = TRUE)
+data_beta <- as.data.frame(csv1)
+csv2 <- read.csv2(file = "../Excel/betaSMB85-05.csv", header = TRUE)
+data_betaSMB <- as.data.frame(csv2)
+csv3 <- read.csv2(file = "../Excel/betaHML85-05.csv", header = TRUE)
+data_betaHML <- as.data.frame(csv3)
+csv4 <- read.csv2(file = "../Excel/betaMOM85-05.csv", header = TRUE)
+data_betaMOM <- as.data.frame(csv4)
+csv5 <- read.csv2(file = "../Excel/rentaTransac85-05.csv", header = TRUE)
+data_rentaTransac <- as.data.frame(csv5)
 
 ratioSharpe <- function(vect_return, vect_risk_free_return){
   return((mean(vect_return)-mean(vect_risk_free_return))/sd(vect_return))
@@ -89,4 +87,4 @@ alphaCahart(data_renta$P10P1, data_renta$rf, data_beta$P10P1, data_renta$marche,
 t.test((data_renta$P1-data_renta$rf)-mean(data_beta$P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P1)*mean(data_betaMOM$MOM), mu=0)
 t.test((data_renta$P10-data_renta$rf)-mean(data_beta$P10)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10)*mean(data_betaHML$HML)-mean(data_betaMOM$P10)*mean(data_betaMOM$MOM), mu=0)
 t.test((data_renta$P10P1-data_renta$rf)-mean(data_beta$P10P1)*(mean(data_renta$marche)-mean(data_renta$rf))-mean(data_betaSMB$P10P1)*mean(data_betaSMB$SMB)-mean(data_betaHML$P10P1)*mean(data_betaHML$HML)-mean(data_betaMOM$P10P1)*mean(data_betaMOM$MOM), mu=0)
-       
+

@@ -35,6 +35,8 @@ rentab <- function(annee_periode, mois_periode, taille_periode){
 association_actif_pf <- function(annee_periode, debut_periode, taille_periode){
   rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
+  print("rentabilities")
+  print(sorted_rentabilites)
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   actif_portfeuille = data.frame(portefeuille = rep(0,100))
   rownames(actif_portfeuille) = stock_numbers
@@ -54,6 +56,8 @@ association_actif_pf <- function(annee_periode, debut_periode, taille_periode){
 composition_portefeuille <- function(annee_periode, debut_periode, taille_periode){
   rentabilites = rentab(annee_periode, debut_periode - taille_periode , taille_periode)
   sorted_rentabilites = rentabilites[order(rentabilites[,2],decreasing=F),]
+  print("rentabilities")
+  print(sorted_rentabilites)
   portefeuille = data.frame(pf=c("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8", "P9", "P10"), actifs = rep(0, 10))
   for (num_pf in seq(1:10)) {
     actif_pf = rep(0, 10)
@@ -129,8 +133,10 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
       }
       
       rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,indice_P + 2]<-renta_k/10
-      rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2]
-        <-renta_k/10 - (mois == 6) ? abs(renta_k/10) * 0.001 : 0
+      if (mois == 6) {
+        renta_k <- renta_k - 0.001 * abs(renta_k)
+      }
+      rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2] <- renta_k/10
       beta_frame[beta_frame$annee==annee & beta_frame$mois==mois,indice_P + 2]<-beta_k/10
       betaSMB_frame[betaSMB_frame$annee==annee & betaSMB_frame$mois==mois,indice_P + 2]<-betaSMB_k/10
       betaHML_frame[betaHML_frame$annee==annee & betaHML_frame$mois==mois,indice_P + 2]<-betaHML_k/10
@@ -196,6 +202,8 @@ rentab_actif <- rentab(1985, 1, 6)
 print(rentab_actif)
 portefeuilles <- composition_portefeuille(1986, 7, 6)
 print(portefeuilles)
+pf <- association_actif_pf(1985, 7, 6)
+print(pf)
 test <- portefeuille_annuel(20, 6)
 print(test)
 write.csv2(test, row.names = TRUE,col.names = TRUE, file="../Excel/composition.csv")
