@@ -1,6 +1,5 @@
 # On recupere les donnees
 library(readxl)
-
 actifs <- data.frame(read_excel("../Excel/Selected_Actif_85-05.xlsx"))
 stock_numbers <- unique(actifs$stock_number)
 
@@ -111,7 +110,8 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
     annee = as.integer(strsplit(date, "/")[[1]][2])
     mois = as.integer(strsplit(date, "/")[[1]][1])
     
-    if (mois%%taille_periode == 1) compo <- composition_portefeuille(annee, debut_periode, taille_periode)
+    if (mois%%taille_periode == 1 && taille_periode == 3) compo <- composition_portefeuille(annee, debut_periode, taille_periode)
+    if (mois == 7 && taille_periode == 6) compo <- composition_portefeuille(annee, debut_periode, taille_periode)
     
     for (indice_P in seq(1:10)){
       
@@ -134,7 +134,11 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
       }
       
       rentab_frame[rentab_frame$annee==annee & rentab_frame$mois==mois,indice_P + 2]<-renta_k/10
-      if (mois%%taille_periode == 1) {
+      if (mois%%taille_periode == 1 && taille_periode == 3) {
+        renta_k <- renta_k - 0.001 * abs(renta_k)
+      }
+      
+      if (mois == 7 && taille_periode == 6) {
         renta_k <- renta_k - 0.001 * abs(renta_k)
       }
       rentaTransac_frame[rentaTransac_frame$annee==annee & rentaTransac_frame$mois==mois,indice_P + 2] <- renta_k/10
@@ -163,14 +167,23 @@ rentab_portefeuille <- function(debut_periode, taille_periode){
   betaMOM_frame$P10P1 <- betaMOM_frame$P10 - betaMOM_frame$P1
   rentaTransac_frame$P10P1 <- rentaTransac_frame$P10 - rentaTransac_frame$P1
   
-  write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05-33.csv")
-  write.csv2(rentab_frame, "../Excel/renta85-05-33.csv")
-  write.csv2(beta_frame, "../Excel/beta85-05.csv")
-  write.csv2(betaSMB_frame, "../Excel/betaSMB85-05.csv")
-  write.csv2(betaHML_frame, "../Excel/betaHML85-05.csv")
-  write.csv2(betaMOM_frame, "../Excel/betaMOM85-05.csv")
+  if (taille_periode == 6) {
+    write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05.csv")
+    write.csv2(rentab_frame, "../Excel/renta85-05.csv")
+    write.csv2(beta_frame, "../Excel/beta85-05.csv")
+    write.csv2(betaSMB_frame, "../Excel/betaSMB85-05.csv")
+    write.csv2(betaHML_frame, "../Excel/betaHML85-05.csv")
+    write.csv2(betaMOM_frame, "../Excel/betaMOM85-05.csv")
+  }
+  else{
+    write.csv2(rentaTransac_frame, "../Excel/rentaTransac85-05-33.csv")
+    write.csv2(rentab_frame, "../Excel/renta85-05-33.csv")
+  }
 }
+
+rentab_frame <- rentab_portefeuille(7,6)
 rentab_frame <- rentab_portefeuille(4,3)
+
 
 # Creation du fichier associant chaque actif a un portefeuille en tout temps
 # duree_etude correspond a la duree de l'etude en nombre d'annees (nombre entier)
